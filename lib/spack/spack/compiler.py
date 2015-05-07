@@ -48,13 +48,13 @@ def _verify_executables(*paths):
 
 _version_cache = {}
 
-def get_compiler_version(compiler_path, version_arg, regex='(.*)'):
+def get_compiler_version(compiler_path, version_arg, regex='(.*)', error=None, subtype=""):
     if not compiler_path in _version_cache:
         compiler = Executable(compiler_path)
-        output = compiler(version_arg, return_output=True, error=None)
+        output = compiler(version_arg, return_output=True, error=error)
 
         match = re.search(regex, output)
-        _version_cache[compiler_path] = match.group(1) if match else 'unknown'
+        _version_cache[compiler_path] = "{0}{1}".format(subtype,match.group(1)) if match else 'unknown'
 
     return _version_cache[compiler_path]
 
