@@ -15,7 +15,6 @@ class PyCelery(PythonPackage):
     version('4.3.0', sha256='4c4532aa683f170f40bd76f928b70bc06ff171a959e06e71bf35f2f9d6031ef9')
     version('4.2.1', sha256='77dab4677e24dc654d42dfbdfed65fa760455b6bb563a0877ecc35f4cfcfc678')
 
-    variant('rabbitmq', default=False, description="Use rabbitMQ transport")
     variant('redis', default=False, description="Use redis transport")
     # 'auth',
     # 'cassandra',
@@ -27,6 +26,7 @@ class PyCelery(PythonPackage):
     # 'arangodb',
     # 'eventlet',
     # 'gevent',
+    # 'librabbitmq',
     # 'msgpack',
     # 'yaml',
     # 'sqs',
@@ -48,7 +48,6 @@ class PyCelery(PythonPackage):
 
     depends_on('py-setuptools', type=('build', 'run'))
 
-    depends_on('librabbitmq', when='+rabbitmq', type='run')
     depends_on('py-redis', when='+redis', type='run')
 
     depends_on('py-pytz', type='run')
