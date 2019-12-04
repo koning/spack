@@ -12,6 +12,7 @@ class PyMaestrowf(PythonPackage):
 
     homepage = "https://github.com/LLNL/maestrowf/"
     url      = "https://github.com/LLNL/maestrowf/archive/v1.1.2.tar.gz"
+    git      = "https://github.com/LLNL/maestrowf.git"
 
     maintainers = ['FrankD412']
 
@@ -20,6 +21,7 @@ class PyMaestrowf(PythonPackage):
     version('1.1.1', sha256='a476ad4b40846d7b7f9540d6413df1b42eb655735e8d3c6c07e0baa68e20a8bb')
     version('1.1.0', sha256='14e701d6a10ab758215aab6b6809817d9a39416a4f477cd2f2551883fc68477b')
     version('1.0.1', sha256='cdd503f0b11db9114405132274b28766044402d1183b5836406ed91d558fd06c')
+    version("develop", branch="develop")
 
     depends_on('py-setuptools', type='build')
     depends_on('py-pyyaml@4.2b1:',     type=('build', 'run'))
