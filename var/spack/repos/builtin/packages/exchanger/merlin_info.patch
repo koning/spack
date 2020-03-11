@@ -1,0 +1,198 @@
+diff -ur Exchanger-1.0.1/archimedes/__init__.py Exchanger-1.0.1_new/archimedes/__init__.py
+--- Exchanger-1.0.1/archimedes/__init__.py	2007-05-11 13:51:53.000000000 -0700
++++ Exchanger-1.0.1_new/archimedes/__init__.py	2020-03-11 10:50:59.622886000 -0700
+@@ -1,18 +1,18 @@
+ #!python
+-"""Bootstrap merlin installation
++"""Bootstrap merlin_info installation
+ 
+-If you want to use merlin in your package's setup.py, just include
++If you want to use merlin_info in your package's setup.py, just include
+ this directory as a subdirectory alongside setup.py (using
+ svn:externals), and add this to the top of your setup.py::
+ 
+-    from archimedes import use_merlin
+-    use_merlin()
++    from archimedes import use_merlin_info
++    use_merlin_info()
+ 
+-If you want to require a specific version of merlin, set a download
++If you want to require a specific version of merlin_info, set a download
+ mirror, or use an alternate download directory, you can do so by supplying
+-the appropriate options to ``use_merlin()``.
++the appropriate options to ``use_merlin_info()``.
+ 
+-This file can also be run as a script to install or upgrade merlin.
++This file can also be run as a script to install or upgrade merlin_info.
+ """
+ 
+ import sys, os
+@@ -24,49 +24,49 @@
+ 
+ branch          = "1"
+ endOfBranch     = "2a"
+-default_url     = "http://cheeseshop.python.org/packages/any/m/merlin/"
+-reqSpec         = "merlin >= %s, < %s" % (branch, endOfBranch)
++default_url     = "http://cheeseshop.python.org/packages/any/m/merlin_info/"
++reqSpec         = "merlin_info >= %s, < %s" % (branch, endOfBranch)
+ 
+-def use_merlin(package_index=default_url, to_dir=os.curdir, download_delay=15):
+-    """Automatically find/download merlin and make it available on sys.path
++def use_merlin_info(package_index=default_url, to_dir=os.curdir, download_delay=15):
++    """Automatically find/download merlin_info and make it available on sys.path
+ 
+-    `package_index` is a URL (ending with a '/') which contains merlin
+-    eggs.  `to_dir` is the directory where merlin will be downloaded,
++    `package_index` is a URL (ending with a '/') which contains merlin_info
++    eggs.  `to_dir` is the directory where merlin_info will be downloaded,
+     if it is not already available.  If `download_delay` is specified,
+     it should be the number of seconds that will be paused before
+     initiating a download, should one be required.  If an older
+-    version of merlin is installed, this routine will print a message
++    version of merlin_info is installed, this routine will print a message
+     to ``sys.stderr`` and raise SystemExit in an attempt to abort the
+     calling script.
+     """
+ 
+     def bootstrap():
+-        egg = download_merlin(package_index, to_dir, download_delay)
++        egg = download_merlin_info(package_index, to_dir, download_delay)
+         sys.path.insert(0, egg)
+-        import merlin; merlin.bootstrap_install_from = egg
++        import merlin_info; merlin_info.bootstrap_install_from = egg
+ 
+     def rebootstrap():
+-        del sys.modules['merlin']
++        del sys.modules['merlin_info']
+         bootstrap()
+ 
+     try:
+-        import merlin
+-        merlin.require(reqSpec)
++        import merlin_info
++        merlin_info.require(reqSpec)
+     except ImportError:
+         bootstrap()
+     except AttributeError:
+-        # 'merlin' is pythia's merlin
+-        del merlin
++        # 'merlin_info' is pythia's merlin_info
++        del merlin_info
+         rebootstrap()
+-    except merlin.VersionConflict:
+-        # 'merlin' is a merlin from a different branch
+-        del merlin
++    except merlin_info.VersionConflict:
++        # 'merlin_info' is a merlin_info from a different branch
++        del merlin_info
+         rebootstrap()
+ 
+-def download_merlin(package_index=default_url, to_dir=os.curdir, delay=15):
+-    """Download merlin from a specified location and return its filename
++def download_merlin_info(package_index=default_url, to_dir=os.curdir, delay=15):
++    """Download merlin_info from a specified location and return its filename
+ 
+-    `package_index` is a URL (ending with a '/') which contains merlin
++    `package_index` is a URL (ending with a '/') which contains merlin_info
+     eggs. `to_dir` is the directory where the egg will be downloaded.
+     `delay` is the number of seconds to pause before an actual
+     download attempt.
+@@ -82,7 +82,7 @@
+         t = basename[:-4].split('-')
+         if len(t) == 2:
+             name, version = t
+-            if name == "merlin" and version.startswith(branch + "."):
++            if name == "merlin_info" and version.startswith(branch + "."):
+                 candidates.append(basename)
+                 candidateMap[basename] = egg
+     
+@@ -99,14 +99,14 @@
+             if delay:
+                 log.warn("""
+ ---------------------------------------------------------------------------
+-This script requires merlin version %s to run (even to display
++This script requires merlin_info version %s to run (even to display
+ help).  I will attempt to download it for you (from
+ %s), but
+ you may need to enable firewall access for this script first.
+ I will start the download in %d seconds.
+ 
+ (Note: if this machine does not have network access, please obtain the
+-most recent version of merlin v%s and place it in this directory
++most recent version of merlin_info v%s and place it in this directory
+ before rerunning this script.)
+ ---------------------------------------------------------------------------""",
+                     branch, package_index, delay, branch
+@@ -130,13 +130,13 @@
+                     t = basename[:-4].split('-')
+                     if len(t) == 2:
+                         name, version = t
+-                        if name == "merlin" and version.startswith(branch + "."):
++                        if name == "merlin_info" and version.startswith(branch + "."):
+                             candidates.append(basename)
+                             candidateMap[basename] = link
+ 
+             if not candidates:
+                 print >>sys.stderr, (
+-                    "The required version of merlin (v%s) cannot be found.\n"
++                    "The required version of merlin_info (v%s) cannot be found.\n"
+                     ) % branch
+                 sys.exit(3)
+             
+@@ -157,31 +157,31 @@
+     return os.path.realpath(saveto)
+ 
+ def main(argv):
+-    """Install or upgrade merlin"""
++    """Install or upgrade merlin_info"""
+ 
+     try:
+-        import merlin
++        import merlin_info
+     except ImportError:
+         egg = None
+         try:
+-            egg = download_merlin(delay=0)
++            egg = download_merlin_info(delay=0)
+             sys.path.insert(0,egg)
+-            from merlin import main
++            from merlin_info import main
+             return main(['install'] + list(argv) + [egg])   # we're done here
+         finally:
+             if egg and os.path.exists(egg):
+                 os.unlink(egg)
+ 
+-    import merlin
++    import merlin_info
+     try:
+-        merlin.require(reqSpec)
+-    except merlin.VersionConflict:
+-        from merlin import main
+-        main(list(argv)+[download_merlin(delay=0)])
++        merlin_info.require(reqSpec)
++    except merlin_info.VersionConflict:
++        from merlin_info import main
++        main(list(argv)+[download_merlin_info(delay=0)])
+         sys.exit(0) # try to force an exit
+     else:
+         if argv:
+-            from merlin import main
++            from merlin_info import main
+             main(['install'] + argv)
+         else:
+             print "Merlin version",branch,"has been installed."
+diff -ur Exchanger-1.0.1/setup.py Exchanger-1.0.1_new/setup.py
+--- Exchanger-1.0.1/setup.py	2007-05-11 13:51:49.000000000 -0700
++++ Exchanger-1.0.1_new/setup.py	2020-03-11 10:48:48.446952000 -0700
+@@ -1,8 +1,8 @@
+ 
+-from archimedes import use_merlin
+-use_merlin()
++from archimedes import use_merlin_info
++use_merlin_info()
+ 
+-from merlin import setup, find_packages
++from merlin_info import setup, find_packages
+ 
+ setup(
+     

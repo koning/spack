@@ -1,0 +1,34 @@
+diff -ur pythia-0.8.1.18/pyre/applications/__init__.py pythia-0.8.1.18_new/pyre/applications/__init__.py
+--- pythia-0.8.1.18/pyre/applications/__init__.py	2013-09-19 09:41:22.000000000 -0700
++++ pythia-0.8.1.18_new/pyre/applications/__init__.py	2020-03-11 10:40:18.563835000 -0700
+@@ -48,8 +48,8 @@
+ 
+     Derived from EntryPoint.
+ 
+-    2013-09-19: Extracted from merlin by Brad Aagaard to remove
+-      dependence of nemesis on merlin.
++    2013-09-19: Extracted from merlin_info by Brad Aagaard to remove
++      dependence of nemesis on merlin_info.
+     """
+ 
+     module, attrs = name.split(':')
+diff -ur pythia-0.8.1.18/setup.py pythia-0.8.1.18_new/setup.py
+--- pythia-0.8.1.18/setup.py	2016-11-29 17:06:28.000000000 -0800
++++ pythia-0.8.1.18_new/setup.py	2020-03-11 10:39:35.196916000 -0700
+@@ -1,6 +1,6 @@
+ 
+ try:
+-    from merlin import setup, find_packages
++    from merlin_info import setup, find_packages
+ 
+ except (ImportError, AssertionError):
+     from ez_setup import use_setuptools
+@@ -9,7 +9,7 @@
+     from setuptools import setup, find_packages
+ 
+ except AssertionError:
+-    from merlin import setup, find_packages
++    from merlin_info import setup, find_packages
+ 
+ 
+ setup(
