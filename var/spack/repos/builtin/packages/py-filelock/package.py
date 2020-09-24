@@ -14,6 +14,7 @@ class PyFilelock(PythonPackage):
     homepage = "https://github.com/benediktschmitt/py-filelock"
     url      = "https://pypi.io/packages/source/f/filelock/filelock-3.0.4.tar.gz"
 
+    version('3.0.12',  sha256='18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59')
     version('3.0.4',  sha256='011327d4ed939693a5b28c0fdf2fd9bda1f68614c1d6d0643a89382ce9843a71')
     version('3.0.3',  sha256='7d8a86350736aa0efea0730e6a7f774195cbb1c2d61134c15f6be576399e87ff')
     version('3.0.0',  sha256='b3ad481724adfb2280773edd95ce501e497e88fa4489c6e41e637ab3fd9a456c')
