@@ -24,3 +24,5 @@ class PyFilelock(PythonPackage):
     version('2.0.10', sha256='c73bf706d8a0c5722de0b745495fed9cda0e46c0eabb44eb18ee3f00520fa85f')
     version('2.0.9',  sha256='0f91dce339c9f25d6f2e0733a17e4f9a47b139dffda52619a0e61e013e5c6782')
     version('2.0.8',  sha256='7e48e4906de3c9a5d64d8f235eb3ae1050dfefa63fd65eaf318cc915c935212b')
+
+    depends_on('py-setuptools', type=('build', 'run'))
