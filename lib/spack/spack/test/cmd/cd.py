@@ -1,12 +1,11 @@
-# Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2023 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 from spack.main import SpackCommand
 
-
-cd = SpackCommand('cd')
+cd = SpackCommand("cd")
 
 
 def test_cd():
@@ -14,4 +13,4 @@ def test_cd():
 
     out = cd()
 
-    assert "To initialize spack's shell commands:" in out
+    assert "To set up shell support" in out

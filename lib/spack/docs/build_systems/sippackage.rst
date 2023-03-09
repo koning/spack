@@ -1,13 +1,13 @@
-.. Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
+.. Copyright 2013-2023 Lawrence Livermore National Security, LLC and other
    Spack Project Developers. See the top-level COPYRIGHT file for details.
 
    SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 .. _sippackage:
 
-----------
-SIPPackage
-----------
+---
+SIP
+---
 
 SIP is a tool that makes it very easy to create Python bindings for C and C++
 libraries. It was originally developed to create PyQt, the Python bindings for
@@ -22,7 +22,7 @@ provides support functions to the automatically generated code.
 Phases
 ^^^^^^
 
-The ``SIPPackage`` base class comes with the following phases:
+The ``SIPBuilder`` and ``SIPPackage`` base classes come with the following phases:
 
 #. ``configure`` - configure the package
 #. ``build`` - build the package
@@ -93,10 +93,17 @@ in the site-packages directory:
    $ python
    >>> import setuptools
    >>> setuptools.find_packages()
-   ['QtPy5']
+   [
+       'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtGui', 'PyQt5.QtHelp',
+       'PyQt5.QtMultimedia', 'PyQt5.QtMultimediaWidgets', 'PyQt5.QtNetwork',
+       'PyQt5.QtOpenGL', 'PyQt5.QtPrintSupport', 'PyQt5.QtQml',
+       'PyQt5.QtQuick', 'PyQt5.QtSvg', 'PyQt5.QtTest', 'PyQt5.QtWebChannel',
+       'PyQt5.QtWebSockets', 'PyQt5.QtWidgets', 'PyQt5.QtXml',
+       'PyQt5.QtXmlPatterns'
+    ]
 
 
-Large, complex packages like ``QtPy5`` will return a long list of
+Large, complex packages like ``py-pyqt5`` will return a long list of
 packages, while other packages may return an empty list. These packages
 only install a single ``foo.py`` file. In Python packaging lingo,
 a "package" is a directory containing files like:
@@ -108,21 +115,25 @@ a "package" is a directory containing files like:
    foo/baz.py
 
 
-whereas a "module" is a single Python file. Since ``find_packages``
-only returns packages, you'll have to determine the correct module
-names yourself. You can now add these packages and modules to the
-package like so:
+whereas a "module" is a single Python file.
+
+The ``SIPPackage`` base class automatically detects these module
+names for you. If, for whatever reason, the module names detected
+are wrong, you can provide the names yourself by overriding
+``import_modules`` like so:
 
 .. code-block:: python
 
    import_modules = ['PyQt5']
 
 
-When you run ``spack install --test=root py-pyqt5``, Spack will attempt
-to import the ``PyQt5`` module after installation.
+These tests often catch missing dependencies and non-RPATHed
+libraries. Make sure not to add modules/packages containing the word
+"test", as these likely won't end up in the installation directory,
+or may require test dependencies like pytest to be installed.
 
-These tests most often catch missing dependencies and non-RPATHed
-libraries.
+These tests can be triggered by running ``spack install --test=root``
+or by running ``spack test run`` after the installation has finished.
 
 ^^^^^^^^^^^^^^^^^^^^^^
 External documentation

@@ -1,18 +1,17 @@
-# Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2023 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-import sys
 import os
+import sys
 
 import llnl.util.tty as tty
 
-import spack.config
 import spack.cmd
 import spack.cmd.common.arguments as arguments
+import spack.config
 import spack.repo
-from spack.stage import DIYStage
 
 description = "developer build: build from code in current working directory"
 section = "build"
@@ -20,38 +19,77 @@ level = "long"
 
 
 def setup_parser(subparser):
-    arguments.add_common_arguments(subparser, ['jobs'])
+    arguments.add_common_arguments(subparser, ["jobs"])
     subparser.add_argument(
-        '-d', '--source-path', dest='source_path', default=None,
-        help="path to source directory. defaults to the current directory")
+        "-d",
+        "--source-path",
+        dest="source_path",
+        default=None,
+        help="path to source directory. defaults to the current directory",
+    )
     subparser.add_argument(
-        '-i', '--ignore-dependencies', action='store_true', dest='ignore_deps',
-        help="don't try to install dependencies of requested packages")
-    arguments.add_common_arguments(subparser, ['no_checksum'])
+        "-i",
+        "--ignore-dependencies",
+        action="store_true",
+        dest="ignore_deps",
+        help="don't try to install dependencies of requested packages",
+    )
+    arguments.add_common_arguments(subparser, ["no_checksum", "deprecated"])
     subparser.add_argument(
-        '--keep-prefix', action='store_true',
-        help="do not remove the install prefix if installation fails")
+        "--keep-prefix",
+        action="store_true",
+        help="do not remove the install prefix if installation fails",
+    )
     subparser.add_argument(
-        '--skip-patch', action='store_true',
-        help="skip patching for the developer build")
+        "--skip-patch", action="store_true", help="skip patching for the developer build"
+    )
     subparser.add_argument(
-        '-q', '--quiet', action='store_true', dest='quiet',
-        help="do not display verbose build output while installing")
+        "-q",
+        "--quiet",
+        action="store_true",
+        dest="quiet",
+        help="do not display verbose build output while installing",
+    )
     subparser.add_argument(
-        '--drop-in', type=str, dest='shell', default=None,
-        help="drop into a build environment in a new shell, e.g. bash, zsh")
-    arguments.add_common_arguments(subparser, ['spec'])
+        "--drop-in",
+        type=str,
+        dest="shell",
+        default=None,
+        help="drop into a build environment in a new shell, e.g. bash, zsh",
+    )
+    subparser.add_argument(
+        "--test",
+        default=None,
+        choices=["root", "all"],
+        help="""If 'root' is chosen, run package tests during
+installation for top-level packages (but skip tests for dependencies).
+if 'all' is chosen, run package tests during installation for all
+packages. If neither are chosen, don't run tests for any packages.""",
+    )
+    arguments.add_common_arguments(subparser, ["spec"])
 
     stop_group = subparser.add_mutually_exclusive_group()
     stop_group.add_argument(
-        '-b', '--before', type=str, dest='before', default=None,
-        help="phase to stop before when installing (default None)")
+        "-b",
+        "--before",
+        type=str,
+        dest="before",
+        default=None,
+        help="phase to stop before when installing (default None)",
+    )
     stop_group.add_argument(
-        '-u', '--until', type=str, dest='until', default=None,
-        help="phase to stop after when installing (default None)")
+        "-u",
+        "--until",
+        type=str,
+        dest="until",
+        default=None,
+        help="phase to stop after when installing (default None)",
+    )
 
     cd_group = subparser.add_mutually_exclusive_group()
-    arguments.add_common_arguments(cd_group, ['clean', 'dirty'])
+    arguments.add_common_arguments(cd_group, ["clean", "dirty"])
+
+    spack.cmd.common.arguments.add_concretizer_args(subparser)
 
 
 def dev_build(self, args):
@@ -64,45 +102,57 @@ def dev_build(self, args):
 
     spec = specs[0]
     if not spack.repo.path.exists(spec.name):
-        tty.die("No package for '{0}' was found.".format(spec.name),
-                "  Use `spack create` to create a new package")
+        tty.die(
+            "No package for '{0}' was found.".format(spec.name),
+            "  Use `spack create` to create a new package",
+        )
 
     if not spec.versions.concrete:
         tty.die(
             "spack dev-build spec must have a single, concrete version. "
-            "Did you forget a package version number?")
-
-    spec.concretize()
-    package = spack.repo.get(spec)
-
-    if package.installed:
-        tty.error("Already installed in %s" % package.prefix)
-        tty.msg("Uninstall or try adding a version suffix for this dev build.")
-        sys.exit(1)
+            "Did you forget a package version number?"
+        )
 
     source_path = args.source_path
     if source_path is None:
         source_path = os.getcwd()
     source_path = os.path.abspath(source_path)
 
-    # Forces the build to run out of the current directory.
-    package.stage = DIYStage(source_path)
+    # Forces the build to run out of the source directory.
+    spec.constrain("dev_path=%s" % source_path)
+    spec.concretize()
+
+    if spec.installed:
+        tty.error("Already installed in %s" % spec.prefix)
+        tty.msg("Uninstall or try adding a version suffix for this dev build.")
+        sys.exit(1)
 
     # disable checksumming if requested
     if args.no_checksum:
-        spack.config.set('config:checksum', False, scope='command_line')
+        spack.config.set("config:checksum", False, scope="command_line")
 
-    package.do_install(
+    if args.deprecated:
+        spack.config.set("config:deprecated", True, scope="command_line")
+
+    tests = False
+    if args.test == "all":
+        tests = True
+    elif args.test == "root":
+        tests = [spec.name for spec in specs]
+
+    spec.package.do_install(
+        tests=tests,
         make_jobs=args.jobs,
         keep_prefix=args.keep_prefix,
         install_deps=not args.ignore_deps,
         verbose=not args.quiet,
-        keep_stage=True,   # don't remove source dir for dev build.
         dirty=args.dirty,
         stop_before=args.before,
-        stop_at=args.until)
+        skip_patch=args.skip_patch,
+        stop_at=args.until,
+    )
 
     # drop into the build environment of the package?
     if args.shell is not None:
-        spack.build_environment.setup_package(package, dirty=False)
+        spack.build_environment.setup_package(spec.package, dirty=False)
         os.execvp(args.shell, [args.shell])

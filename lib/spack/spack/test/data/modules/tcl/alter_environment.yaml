@@ -2,8 +2,9 @@ enable:
   - tcl
 tcl:
   all:
+    autoload: none
     filter:
-      environment_blacklist':
+      exclude_env_vars:
         - CMAKE_PREFIX_PATH
     environment:
       set:
@@ -17,6 +18,6 @@ tcl:
       unset:
         - BAR
 
-  'platform=test target=x86':
+  'platform=test target=core2':
     load:
       - 'foo/bar'

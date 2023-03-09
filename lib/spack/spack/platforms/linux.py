@@ -1,25 +1,28 @@
-# Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2023 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
-
 import platform
-from spack.architecture import Platform, Target
+
+import archspec.cpu
+
+import spack.target
 from spack.operating_systems.linux_distro import LinuxDistro
-import llnl.util.cpu as cpu
+
+from ._platform import Platform
 
 
 class Linux(Platform):
-    priority    = 90
+    priority = 90
 
     def __init__(self):
-        super(Linux, self).__init__('linux')
+        super(Linux, self).__init__("linux")
 
-        for name in cpu.targets:
-            self.add_target(name, Target(name))
+        for name in archspec.cpu.TARGETS:
+            self.add_target(name, spack.target.Target(name))
 
         # Get specific default
-        self.default = cpu.host().name
+        self.default = archspec.cpu.host().name
         self.front_end = self.default
         self.back_end = self.default
 
@@ -31,4 +34,4 @@ class Linux(Platform):
 
     @classmethod
     def detect(cls):
-        return 'linux' in platform.system().lower()
+        return "linux" in platform.system().lower()

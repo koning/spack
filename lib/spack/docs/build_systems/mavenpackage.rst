@@ -1,13 +1,13 @@
-.. Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
+.. Copyright 2013-2023 Lawrence Livermore National Security, LLC and other
    Spack Project Developers. See the top-level COPYRIGHT file for details.
 
    SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 .. _mavenpackage:
 
-------------
-MavenPackage
-------------
+-----
+Maven
+-----
 
 Apache Maven is a general-purpose build system that does not rely
 on Makefiles to build software. It is designed for building and
@@ -17,7 +17,7 @@ managing and Java-based project.
 Phases
 ^^^^^^
 
-The ``MavenPackage`` base class comes with the following phases:
+The ``MavenBuilder`` and ``MavenPackage`` base classes come with the following phases:
 
 #. ``build`` - compile code and package into a JAR file
 #. ``install`` - copy to installation prefix
@@ -74,6 +74,24 @@ should add:
 
    depends_on('java@7:', type='build')
    depends_on('maven@3.5.4:', type='build')
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Passing arguments to the build phase
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The default build and install phases should be sufficient to install
+most packages. However, you may want to pass additional flags to
+the build phase. For example:
+
+.. code-block:: python
+
+   def build_args(self):
+       return [
+           '-Pdist,native',
+           '-Dtar',
+           '-Dmaven.javadoc.skip=true'
+       ]
 
 
 ^^^^^^^^^^^^^^^^^^^^^^
